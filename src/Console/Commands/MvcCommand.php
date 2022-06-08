@@ -100,7 +100,7 @@ class MvcCommand extends Command
      */
     protected function getTemplate($type)
     {
-        return file_get_contents(base_path("vendor/pravin/crud/src/templates/$type.temp"));
+        return file_get_contents(base_path("vendor/indianic/crud/src/templates/$type.temp"));
     }
 
     /**
@@ -130,7 +130,7 @@ class MvcCommand extends Command
      */
     protected function getViewTemplate($type)
     {
-        return file_get_contents(base_path("vendor/pravin/crud/src/templates/views/$type.temp"));
+        return file_get_contents(base_path("vendor/indianic/crud/src/templates/views/$type.temp"));
     }
     /**
      * This function will create view

@@ -55,7 +55,7 @@ class ViewCommand extends Command
      */
     protected function getTemplate()
     {
-        return file_get_contents(base_path("vendor/pravin/crud/src/templates/view.temp"));
+        return file_get_contents(base_path("vendor/indianic/crud/src/templates/view.temp"));
     }
     /**
      * [views description]
