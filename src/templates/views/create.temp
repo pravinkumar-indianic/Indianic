@@ -1,0 +1,24 @@
+@extends('admin.layouts.page')
+
+@section('title', __('Add {{modelName}}'))
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.{{modelPluralSlug}}.index') }}">{{ __('{{modelName}}') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ __('Add {{modelName}}') }}</li>
+@endsection
+
+@section('action_buttons')
+    {!! backButton(route('admin.{{modelPluralSlug}}.index')) !!}
+@endsection
+
+@section('content')
+    <div class="card profile-card mb-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row m-1">
+                    @include('admin.{{modelLower}}.form', compact('form'))
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

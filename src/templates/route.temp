@@ -1,0 +1,2 @@
+Route::post('{{modelPluralSlug}}/changeStatus', [\App\Http\Controllers\Admin\{{modelName}}Controller::class, 'changeStatus'])->name('{{modelPluralSlug}}.change_status');
+Route::resource('{{modelPluralSlug}}', \App\Http\Controllers\Admin\{{modelName}}Controller::class);

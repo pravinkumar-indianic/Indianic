@@ -1,0 +1,213 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\{{modelName}}Request;
+use App\Models\{{modelName}};
+use App\Repositories\{{modelName}}Repository;
+use App\DataGrids\{{modelName}}DataGrid;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+
+class {{modelName}}Controller extends Controller
+{
+    /**
+     * @var Repository
+     */
+    protected $reposetory;
+
+    /**
+     * {{modelName}}Controller constructor.
+     * @param {{modelName}} $model
+     */
+    public function __construct({{modelName}} $model)
+    {
+        $this->reposetory = new {{modelName}}Repository($model);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $dataGridHtml = {{modelName}}DataGrid::getHTML();
+        return view('admin.{{modelNameLower}}.index', compact('dataGridHtml'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(FormBuilder $formBuilder){
+        $form = $formBuilder->create(\App\Forms\{{modelName}}Form::class, [
+                'method' => 'POST',
+                'class' => 'row',
+                'url' => route('admin.{{modelPluralSlug}}.store')
+            ]);
+        return view('admin.{{modelNameLower}}.create', compact('form'));
+    }
+    /**
+     * [Store description]
+     * @param  CreateRequest $request [description]
+     * @return [type]                 [description]
+     */
+    public function store({{modelName}}Request $request)
+    {
+        try {
+            $data = $request->all();
+            // DB::beginTransaction();
+            $response = $this->reposetory->saveData($data)->toArray();
+            // DB::commit();
+            return redirect()->route('admin.{{modelPluralSlug}}.index')->with([
+                'message' => __('{{modelNameLower}}.add_success')
+            ]);
+        } catch (\Exception $e) {
+            Log::error("{{modelName}}Controller->store->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        } catch (\Error $e) {
+            Log::error("{{modelName}}Controller->store->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        }
+    }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        try {
+            $id = decrypt($id);
+            $response = $this->model->show($id);
+            return view('admin.{{modelNameLower}}.show', ['model' => $response]);
+        } catch (\Exception $e) {
+            Log::error("{{modelName}}Controller->show->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        } catch (\Error $e) {
+            Log::error("{{modelName}}Controller->show->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        }
+    }
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id, FormBuilder $formBuilder)
+    {
+        try{
+            $id = decrypt($id);
+            $model = $this->reposetory->show($id);
+            $form = $formBuilder->create('App\Forms\{{modelName}}Form', [
+                        'model' => $model,
+                        'method' => 'PUT',
+                        'class' => 'row',
+                        'url' => route('admin.{{modelPluralSlug}}.update', encrypt($id))
+                    ]);
+            return view('admin.{{modelNameLower}}.edit', compact('form'));
+            } catch (\Exception $e) {
+            Log::error("{{modelName}}Controller->edit->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        } catch (\Error $e) {
+            Log::error("{{modelName}}Controller->edit->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        }
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  {{modelName}}Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update({{modelName}}Request $request,$id)
+    {
+        try {
+            $id = decrypt($id);
+            $data = $request->all();
+            $this->reposetory->updateData($data, $id);
+            return redirect()->route('admin.{{modelPluralSlug}}.index')->with([
+                'message' => __('{{modelNameLower}}.edit_success')
+            ]);
+        } catch (\Exception $e) {
+            Log::error("{{modelName}}Controller->update->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        } catch (\Error $e) {
+            Log::error("{{modelName}}Controller->update->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        try {
+            $id = decrypt($id);
+            ($this->reposetory->delete($id));
+            return response()->json([
+                'status' => 'success',
+                'message' => __('{{modelNameLower}}.delete_success')
+            ]);
+        } catch (\Exception $e) {
+            Log::error("{{modelName}}Controller->destroy->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        } catch (\Error $e) {
+            Log::error("{{modelName}}Controller->destroy->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        }
+    }
+    /**
+     * Update the status resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function changeStatus(Request $request)
+    {
+        try {
+            if ($request->ajax()) {
+                if ($request->input('id') > 0) {
+                    $model = $this->reposetory->show($request->input('id'));
+                    if ($model['status'] === 'Inactive') { //make status Active
+                        $data['status'] = 'Active';
+                        $status = 'activated';
+                    } else { //make status Inactive
+                        $data['status'] = 'Inactive';
+                        $status = 'deactivated';
+                        $userTokens = $model->tokens;
+                        if ($userTokens) {
+                            foreach ($userTokens as $usrToken) {
+                                $usrToken->revoke();
+                            }
+                            unset($model->tokens);
+                        }
+                    }
+                    $this->reposetory->update($data, $request->input('id'));
+                    return response()->json(['status' => 'success', 'message' => __('{{modelName}} has been ' . $status . ' successfully.'), 'alert-type' => 'success']);
+                }
+                return response()->json(['status' => 'error', 'message' => __('Something went wrong.'), 'alert-type' => 'error']);
+            }
+        } catch (\Exception $e) {
+            Log::error("{{modelName}}Controller->updateStatus->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        } catch (\Error $e) {
+            Log::error("{{modelName}}Controller->updateStatus->\n" . $e);
+            return response()->json(['message' => __($e->getMessage()), 'alert-type' => 'error','status' => 'error']);
+        }
+    }
+}

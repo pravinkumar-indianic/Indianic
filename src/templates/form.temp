@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Forms;
+
+use Kris\LaravelFormBuilder\Form;
+use Kris\LaravelFormBuilder\Field;
+
+class {{modelName}}Form extends Form
+{
+    public function buildForm()
+    {
+        $this->add('name', Field::TEXT,['label_attr' => ['class' => 'required-asterisk']])
+            ->add('submit', 'submit', [
+                'label' => 'Save',
+                'attr' => [
+                    'class' => 'btn btn-primary'
+                ]
+            ])
+            ->add('clear', 'button', [
+                'label' => 'Cancel',
+                'attr' => [
+                    'class' => 'btn btn-light-secondary',
+                    'onclick' => 'window.location="'.route('admin.{{modelPluralSlug}}.index').'"'
+                ]
+            ]);
+    }
+}

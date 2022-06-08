@@ -1,0 +1,24 @@
+{{-- Generating form from App\Forms\{{modelName}}Form.php --}}
+{!! form($form) !!}
+@include('plugins.datepicker')
+@push('scripts')
+    {!! JsValidator::formRequest('App\Http\Requests\{{modelName}}Request') !!}
+    <script>
+    $(document).ready(function () {
+        $('.date-picker1').datepicker({
+                clearBtn: true,
+                autoclose: true,
+                orientation: 'bottom',
+                format: 'dd-mm-yyyy',
+                endDate : '-1y',
+                startDate: '-100y'
+               
+            });
+
+            $(document).on('click', '.colorbox', function(e){
+            console.log('hide');
+        });
+    
+    });
+    </script>
+@endpush

@@ -1,0 +1,138 @@
+<?php
+
+namespace App\DataGrids;
+
+use Indianic\LaravelDataGrid\LaravelDataGrid;
+use DB;
+
+class {{modelName}}DataGrid extends LaravelDataGrid
+{
+    public $guard = 'admin';
+    /**
+     * Define unique table id
+     * @var mixed $uniqueID
+     */
+    public $uniqueID = '{{modelPluralSlug}}';
+
+    /**
+     * Define how many rows you want to display on a page
+     * @var int $rowPerPage
+     */
+    public $recordsPerPage = 10;
+
+    /**
+     * Define row per page dropdown options
+     * @var array $recordsPerPageOptions
+     */
+    public $recordsPerPageOptions;
+
+    /**
+     * Define mysql column name which you want to default on sorting
+     * @var string $sortBy
+     */
+    public $sortBy;
+
+    /**
+     * Define default soring direction
+     * Example: ASC | DESC
+     * @var string $sortByDirection
+     */
+    public $sortByDirection;
+
+    /**
+     * Set download file prefix or set false
+     * @var mixed
+     */
+    protected $downloadFilePrefix = '{{modelPluralSlug}}';
+
+    /**
+     * Get Resource of Query Builder
+     */
+    public function resource()
+    {
+        return DB::table('{{modelPluralSlug}}');
+    }
+
+    /**
+     * Get Columns with key value
+     */
+    public function columns(): array
+    {
+        return [
+            'name' => 'Name',
+            'status' => __('admin.status'),
+            'action' => __('admin.action')
+        ];
+    }
+
+    /**
+     * Return columns id which you want to allow on sorting
+     * @return array
+     */
+    public function sortableColumns(): array
+    {
+        return [
+            'name' => 'Name',
+        ];
+    }
+
+    /**
+     * Return columns id with label which you want to allow on download
+     * @return array
+     */
+    public function downloadableColumns(): array
+    {
+        return [
+            'name' => 'Name',
+        ];
+    }
+
+    /**
+     * Return columns id with data type which you want to allow on searching
+     * @return array
+     */
+    public function searchableColumns(): array
+    {
+        return [
+            'name' => 'Name',
+            'status'     => getEnumValues('admins', 'status'),
+        ];
+    }
+
+    /**
+     * @desc get column checkbox
+     * @param array $data
+     * @return string
+     */
+    public function getColumnCheckbox($data)
+    {
+        return  '<input type="checkbox" value="' . $data['id'] . '" class="checkbox_grid" />';
+    }
+
+    /**
+     * Return columns status with toggle UI
+     */
+    public function getColumnStatus($data)
+    {
+        return '<div class="custom-control custom-switch light">
+                    <input type="checkbox" class="custom-control-input change-status" data-id = "' . $data['id'] . '" id="switchCheckbox' . $data['id'] . '" ' . (($data['status'] == 'Active') ? 'checked' : '') . '>
+                    <label class="custom-control-label" for="switchCheckbox' . $data['id'] . '"></label>
+                </div>';
+    }
+
+    /**
+     * Return
+     * @return string
+     */
+    public function getColumnAction($data)
+    {
+        $return = '<a class="cursor-pointer mr-3" href="' . route('admin.{{modelPluralSlug}}.edit', encrypt($data['id'])) . '"><i class="bx bx-edit"></i></a>';
+
+        $return .= '<a class="cursor-pointer delete-grid-row" href="javascript:void(0)" data-url="' . route(
+            'admin.{{modelPluralSlug}}.destroy',
+            encrypt($data['id'])
+        ) . '"><i class="bx bx-trash"></i></a>';
+
+        return $return;
+    }
+}

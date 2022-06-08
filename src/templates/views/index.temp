@@ -1,0 +1,63 @@
+@extends('admin.layouts.page')
+
+@section('title', __('{{modelName}}'))
+
+@section('breadcrumb')
+    <li class="breadcrumb-item active" aria-current="page">{{ __('{{modelName}}') }}</li>
+@endsection
+
+@section('action_buttons')
+    {!! addButton(route('admin.{{modelPluralSlug}}.create'), __('Add {{modelName}}')) !!}
+@endsection
+
+@section('content')
+    {!! $dataGridHtml !!}
+@endsection
+
+@include('plugins.bootstrap4-toggle')
+@push('scripts')
+    <script type="text/javascript">
+        /* $('#inic_grid_users').on('AfterRenderGrid',function(){
+             $('.change-status').bootstrapToggle({
+                on: 'Active',
+                off: 'Inactive'
+            })
+        }) */
+
+        $(document).on('click', '.delete-grid-row', function (event) {
+            event.preventDefault();
+            let url = $(this).attr('data-url');
+            SwalConfirm(url, function (url) {
+                $.ajax({
+                    url: url,
+                    type: 'delete',
+                    datatype: 'json',
+                    success: function (response) {
+                        SwalAlert(response.status, response.message);
+                        window.inic_grid_users.refresh();
+                    },
+                    error: function (response) {
+                        SwalAlert(response.status, response.message);
+                    }
+                });
+            })
+        });
+
+        
+        $(document).on('change','.change-status', function(){
+            var id =  $(this).attr('data-id');
+            $.ajax({
+                url: "{{ route('admin.{{modelPluralSlug}}.change_status')}}",
+                type: "post",
+                data: {"id": id},
+                datatype: 'json',
+                success: function (response) {
+                    SwalAlert(response.status, response.message);
+                },
+                error: function (response) {
+                    SwalAlert(response.status, response.message);
+                }
+            });
+        })
+    </script>
+@endpush
