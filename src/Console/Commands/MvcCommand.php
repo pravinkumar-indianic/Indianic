@@ -328,7 +328,7 @@ class MvcCommand extends Command
      * @return [type]      
      */
     protected function sidebar($name){
-        if (!File::exists(resource_path('views/admin/layout/includes/addon-left-sidebar.blade.php'))) {
+        if (!File::exists(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'))) {
             $this->error("addon-left-sidebar.blade.php file not found.");
         }else{
             if (strpos($name, '/')) {
