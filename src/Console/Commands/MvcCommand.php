@@ -250,6 +250,9 @@ class MvcCommand extends Command
             [$name,$slug],
             $this->getTemplate('datagrid')
         );
+        if(!file_exists($path = app_path('/DataGrids'))) {
+            mkdir($path, 0777, true);
+        }
         $path = app_path("/DataGrids/{$name}DataGrid.php");
         if (File::exists($path)) {
             $this->error("DataGrid already exists.");
