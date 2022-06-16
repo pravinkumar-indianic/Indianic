@@ -1,8 +1,1 @@
-<li class="nav-item">
-  <a href="{{route('{{Route}}')}}" class="nav-link @if(Route::currentRouteName()=="{{Route}}") active @endif">
-    <i class="nav-icon fas fa-money-check"></i>
-    <p>
-      {{modelName}}
-    </p>
-  </a>
-</li>
+@include('{{modelName}}::menu')
