@@ -1,1 +1,8 @@
-@include('{{modelName}}::menu')
+@permission('read-admins')
+<li class="menu-list-item">
+    <a href="{{ route('{{modelNameLower}}.admins.index') }}" class="menu-link {{ (strpos($routeName, 'admin.admins') === 0) ? 'active-link' : '' }}">
+        <em class='bx bxs-right-arrow-alt'></em>
+        <span class="menu-title">{{ __('{{modelName}}') }}</span>
+    </a>
+</li>
+@endpermission
