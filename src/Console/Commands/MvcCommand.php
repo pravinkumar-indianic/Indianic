@@ -296,7 +296,7 @@ class MvcCommand extends Command
             [$name,$slug],
             $this->getTemplate('route')
         );
-        File::append(base_path('routes/admin.php'), PHP_EOL.$routeTemplate.PHP_EOL);
+        File::append(base_path('routes/web.php'), PHP_EOL.$routeTemplate.PHP_EOL);
         $this->info('Route created successfully.');
     }
 
@@ -331,9 +331,11 @@ class MvcCommand extends Command
         if (!File::exists(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'))) {
             $this->error("addon-left-sidebar.blade.php file not found.");
         }else{
-            $template = str_replace(
-                ['{{modelName}}','{{modelNameLower}}'],
-                [$name,strtolower($name)],
+            $slug = strtolower($name);
+            $slug = Str::plural($slug);
+            $formTemplate = str_replace(
+                ['{{modelName}}','{{modelNameLower}}','{{modelPluralSlug}}'],
+                [$name,strtolower($name),$slug],
                 $this->getTemplate('sidebar')
             );
             $fp = fopen(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'), 'a');
