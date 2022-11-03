@@ -331,27 +331,9 @@ class MvcCommand extends Command
         if (!File::exists(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'))) {
             $this->error("addon-left-sidebar.blade.php file not found.");
         }else{
-            if (strpos($name, '/')) {
-                list($folder,$file) = explode('/', $name);
-                $slug = strtolower($file);
-                $folderSlug = strtolower($folder);
-                $sidebarTemplate = str_replace(
-                    ['{{modelName}}','{{Route}}'],
-                    [$file,$folderSlug.'.'.$slug],
-                    $this->getTemplate('sidebar')
-                );
-                File::append(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'), PHP_EOL.$sidebarTemplate.PHP_EOL);
-                $this->info('Sidebar created successfully.');
-            }else{
-                $slug = strtolower($name);
-                $sidebarTemplate = str_replace(
-                    ['{{modelName}}','{{Route}}'],
-                    [$name,$slug],
-                    $this->getTemplate('sidebar')
-                );
-                File::append(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'), PHP_EOL.$sidebarTemplate.PHP_EOL);
-                $this->info('Sidebar created successfully.');
-            }
+            $fp = fopen(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'), 'a');
+                fwrite($fp, "\n @include('{$name}::sidebar') ");
+                fclose($fp);
         }
     }
 }
