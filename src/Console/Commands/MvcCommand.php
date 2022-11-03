@@ -331,9 +331,15 @@ class MvcCommand extends Command
         if (!File::exists(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'))) {
             $this->error("addon-left-sidebar.blade.php file not found.");
         }else{
+            $template = str_replace(
+                ['{{modelName}}','{{modelNameLower}}'],
+                [$name,strtolower($name)],
+                $this->getTemplate('sidebar')
+            );
             $fp = fopen(resource_path('views/admin/layouts/includes/addon-left-sidebar.blade.php'), 'a');
-                fwrite($fp, "\n @include('{$name}::sidebar') ");
-                fclose($fp);
+                fwrite($fp, "\n ".$template);
+                fclose($fp);        
+            $this->info('Sidebar updated successfully.');
         }
     }
 }
