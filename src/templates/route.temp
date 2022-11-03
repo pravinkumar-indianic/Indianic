@@ -1,2 +1,4 @@
-Route::post('{{modelPluralSlug}}/changeStatus', [\App\Http\Controllers\Admin\{{modelName}}Controller::class, 'changeStatus'])->name('{{modelPluralSlug}}.change_status');
-Route::resource('{{modelPluralSlug}}', \App\Http\Controllers\Admin\{{modelName}}Controller::class);
+Route::group(['prefix' => 'admin', 'as' => 'admin.','middleware'=>['web','admin','auth:admin']], function () {
+    Route::post('{{modelPluralSlug}}/changeStatus', [\App\Http\Controllers\Admin\{{modelName}}Controller::class, 'changeStatus'])->name('{{modelPluralSlug}}.change_status');
+    Route::resource('{{modelPluralSlug}}', \App\Http\Controllers\Admin\{{modelName}}Controller::class);
+});
