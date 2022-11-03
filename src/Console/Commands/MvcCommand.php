@@ -333,7 +333,7 @@ class MvcCommand extends Command
         }else{
             $slug = strtolower($name);
             $slug = Str::plural($slug);
-            $formTemplate = str_replace(
+            $template = str_replace(
                 ['{{modelName}}','{{modelNameLower}}','{{modelPluralSlug}}'],
                 [$name,strtolower($name),$slug],
                 $this->getTemplate('sidebar')
